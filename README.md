@@ -1,7 +1,5 @@
 # Radiative corrections of the spin foam propagator
 
-**Interact with the file "configs_to_compute.jl" in order to specify the data of the computation.**
-
 ***The codes are parallelized on the available cores.***
 
 *It is advisable for the performance to use a number of workers equal to or less than the physical number of cores present on the system.*
