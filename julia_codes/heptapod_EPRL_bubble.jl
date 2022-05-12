@@ -32,7 +32,7 @@ function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
 
     # set boundary
     step = onehalf = half(1)
-    jb = half(2)
+    jb = half(1)
     # ib must be in range [0, 2jb]
     # (julia index starts from 1)
     ib = 0
