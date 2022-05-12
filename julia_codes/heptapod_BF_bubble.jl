@@ -84,8 +84,7 @@ function heptapod_BF_bubble(cutoff, store_folder::String)
             i3, i3_range = intertwiner_range(jb, jb, j35, j34)
 
             # compute BF vertices
-            reduced_range = (i4, i5, (ib, ib), (ib, ib), i3)
-            v1 = vertex_BF_compute([j45, jb, jb, j34, jb, jb, j35, jb, jb, jb], reduced_range)
+            v1 = vertex_BF_compute([j45, jb, jb, j34, jb, jb, j35, jb, jb, jb])
             v2 = vertex_BF_compute([j34, jb, jb, j45, jb, jb, j35, j78, jb, jb])
 
             # dim internal faces
