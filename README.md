@@ -4,7 +4,7 @@
 
 *It is advisable for the performance to use a number of workers equal to or less than the physical number of cores present on the system.*
 
-A full list of the julia packages used in this code are: TODO: ancora da scrivere 
+A full list of the employed julia packages can be found in ./julia_codes/pkgs.jl
 
 *Before executing the code, all packages must be installed.*
 
@@ -13,8 +13,13 @@ A full list of the julia packages used in this code are: TODO: ancora da scriver
 
 ## Usage:
 
-TODO: ancora da decidere
+in order to execute the codes (on a single machine with the synthax below) you can run the following command:
 
+```
+$PATH_JULIA_EXECUTABLE    -p    [N-1]    $PATH_JULIA_CODE    $ARGS
+```
+
+where [N-1] is the number workers. For the non-parallel version just omit the "-p    [N-1]".
 
 
             
