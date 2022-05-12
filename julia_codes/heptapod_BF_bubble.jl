@@ -28,10 +28,12 @@ println("done\n")
 function heptapod_BF_bubble(cutoff, store_folder::String)
 
     # set boundary
-    step = onehalf = jb = half(1)
+    step = onehalf = half(1)
+    jb = half(1)
     # ib must be in range [0, 2jb]
-    # this means boundary intertwiner 0 (julia index starts from 1)
-    ib_index = 1
+    # (julia index starts from 1)
+    ib = 0
+    ib_index = ib + 1
 
     ampls = Float64[]
 
@@ -82,9 +84,8 @@ function heptapod_BF_bubble(cutoff, store_folder::String)
             i3, i3_range = intertwiner_range(jb, jb, j35, j34)
 
             # compute BF vertices
-            # sl2cfoam-next throws an error for K > 30 with reduced range
-            # TODO: investigare
-            v1 = vertex_BF_compute([j45, jb, jb, j34, jb, jb, j35, jb, jb, jb])
+            reduced_range = (i4, i5, (ib, ib), (ib, ib), i3)
+            v1 = vertex_BF_compute([j45, jb, jb, j34, jb, jb, j35, jb, jb, jb], reduced_range)
             v2 = vertex_BF_compute([j34, jb, jb, j45, jb, jb, j35, j78, jb, jb])
 
             # dim internal faces
@@ -100,9 +101,16 @@ function heptapod_BF_bubble(cutoff, store_folder::String)
 
         end
 
-        ampl = ampls[end] + tampl
-        log("Amplitude at partial cutoff = $pcutoff: $(ampl)")
-        push!(ampls, ampl)
+        # if-else for integer spin case
+        if isempty(ampls)
+            ampl = tampl
+            log("Amplitude at partial cutoff = $pcutoff: $(ampl)")
+            push!(ampls, ampl)
+        else
+            ampl = ampls[end] + tampl
+            log("Amplitude at partial cutoff = $pcutoff: $(ampl)")
+            push!(ampls, ampl)
+        end
 
     end # partial cutoffs loop
 

@@ -31,11 +31,12 @@ println("done\n")
 function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
 
     # set boundary
-    step = onehalf = jb = half(1)
+    step = onehalf = half(1)
+    jb = half(2)
     # ib must be in range [0, 2jb]
-    # this means boundary intertwiner 0 (julia index starts from 1)
-    ib_index = 1
+    # (julia index starts from 1)
     ib = 0
+    ib_index = ib + 1
 
     ampls = Float64[]
 
@@ -114,7 +115,7 @@ function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
 
                 # compute second EPRL vertex
                 v2 = vertex_compute([j34, jb, jb, j45, jb, jb, j35, j78, jb, jb], shells; result=result_return)
-                
+
                 i7, i7_range = intertwiner_range(jb, jb, jb, j78)
 
                 amp_2 = 0.0
@@ -130,9 +131,16 @@ function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
 
         end
 
-        ampl = ampls[end] + tampl
-        log("Amplitude at partial cutoff = $pcutoff: $(ampl)")
-        push!(ampls, ampl)
+        # if-else for integer spin case
+        if isempty(ampls)
+            ampl = tampl
+            log("Amplitude at partial cutoff = $pcutoff: $(ampl)")
+            push!(ampls, ampl)
+        else
+            ampl = ampls[end] + tampl
+            log("Amplitude at partial cutoff = $pcutoff: $(ampl)")
+            push!(ampls, ampl)
+        end
 
     end # partial cutoffs loop
 
@@ -161,7 +169,7 @@ for Dl = SHELL_MIN:SHELL_MAX
     printstyled("\nCurrent Dl = $(Dl)...\n"; bold=true, color=:cyan)
     @time ampls = heptapod_EPRL_bubble(CUTOFF, Dl, STORE_FOLDER)
     push!(column_labels, "Dl = $(Dl)")
-    ampls_matrix[:, Dl - SHELL_MIN + 1] = ampls[:]
+    ampls_matrix[:, Dl-SHELL_MIN+1] = ampls[:]
 
 end
 
