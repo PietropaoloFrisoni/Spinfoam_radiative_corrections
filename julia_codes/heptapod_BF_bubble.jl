@@ -33,6 +33,7 @@ function heptapod_BF_bubble(cutoff, store_folder::String)
     # ib must be in range [0, 2jb]
     # (julia index starts from 1)
     ib = 0
+    # careful: this index won't work with ib!=0 and reduced range
     ib_index = ib + 1
 
     ampls = Float64[]

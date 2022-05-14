@@ -1,6 +1,15 @@
 using Distributed
 
-printstyled("\nHeptapod EPRL bubble computation parallelized on $(nworkers()) worker(s)\n\n"; bold=true, color=:blue)
+number_of_workers = nworkers()
+number_of_processes = nprocs()
+number_of_threads = Threads.nthreads()
+available_cpus = Sys.cpu_info()
+
+printstyled("\nHeptapod EPRL bubble computation parallelized on $(number_of_workers) worker(s) and $(number_of_threads) thread(s)\n\n"; bold=true, color=:blue)
+
+if (number_of_workers*number_of_threads > length(available_cpus))
+    printstyled("WARNING: you are using more resources than available cores on this system. Performances will be affected\n\n"; bold=true, color=:red)
+end
 
 length(ARGS) < 6 && error("please use these 6 arguments: data_sl2cfoam_next_folder    cutoff    shell_min    shell_max     Immirzi    store_folder")
 @eval @everywhere DATA_SL2CFOAM_FOLDER = $(ARGS[1])
@@ -29,6 +38,8 @@ printstyled("initializing library...\n"; bold=true, color=:cyan)
 println("done\n")
 
 function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
+
+    number_of_threads = Threads.nthreads()
 
     # set boundary
     step = onehalf = half(1)
@@ -109,9 +120,9 @@ function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
             # dim internal faces
             dfj = dim(j45) * dim(j34) * dim(j35)
 
-            amp = 0.0
+            ampt = zeros(number_of_threads)
 
-            for j78 in spin_j78_pcutoff[spin_index]
+            Threads.@threads for j78 in spin_j78_pcutoff[spin_index]
 
                 # compute second EPRL vertex
                 v2 = vertex_compute([j34, jb, jb, j45, jb, jb, j35, j78, jb, jb], shells; result=result_return)
@@ -123,9 +134,11 @@ function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
                     amp_2 += v1.a[i3, ib_index, ib_index, i5, i4] * v2.a[i5, i7, i7, i3, i4]
                 end
 
-                amp += amp_2 * sqrt(dim(j78))
+                ampt[Threads.threadid()] += amp_2 * sqrt(dim(j78))
 
             end
+
+            amp = sum(ampt) 
 
             amp * dfj
 
