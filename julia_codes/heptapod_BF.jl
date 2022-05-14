@@ -7,9 +7,6 @@ length(ARGS) < 3 && error("please use these 3 arguments: data_sl2cfoam_next_fold
 CUTOFF = parse(Int, ARGS[2])
 @eval STORE_FOLDER = $(ARGS[3])
 
-STORE_FOLDER = "$(STORE_FOLDER)/data/EPRL/divergence/cutoff_$(CUTOFF)"
-mkpath(STORE_FOLDER)
-
 printstyled("precompiling packages...\n"; bold=true, color=:cyan)
 @everywhere begin
     include("pkgs.jl")
@@ -17,9 +14,15 @@ printstyled("precompiling packages...\n"; bold=true, color=:cyan)
 end
 println("done\n")
 
+CUTOFF_FLOAT = parse(Float64, ARGS[2])
+CUTOFF = HalfInt(CUTOFF_FLOAT)
+
 if (CUTOFF <= 1)
     error("please provide a larger cutoff")
 end
+
+STORE_FOLDER = "$(STORE_FOLDER)/data/BF/cutoff_$(CUTOFF_FLOAT)"
+mkpath(STORE_FOLDER)
 
 printstyled("initializing library...\n"; bold=true, color=:cyan)
 @everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, 0.123) # fictitious Immirzi 

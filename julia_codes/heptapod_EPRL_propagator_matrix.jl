@@ -30,12 +30,12 @@ CUTOFF = HalfInt(CUTOFF_FLOAT)
 BOUNDARY_SPIN_FLOAT = parse(Float64, ARGS[6])
 BOUNDARY_SPIN = HalfInt(BOUNDARY_SPIN_FLOAT)
 
-STORE_FOLDER = "$(STORE_FOLDER)/data/EPRL/propagator_matrix/immirzi_$(IMMIRZI)/bspin_$(BOUNDARY_SPIN_FLOAT)/cutoff_$(CUTOFF_FLOAT)"
-mkpath(STORE_FOLDER)
-
 if (CUTOFF <= 1)
     error("please provide a larger cutoff")
 end
+
+STORE_FOLDER = "$(STORE_FOLDER)/data/EPRL/immirzi_$(IMMIRZI)/propagator_matrix/bspin_$(BOUNDARY_SPIN_FLOAT)/cutoff_$(CUTOFF_FLOAT)"
+mkpath(STORE_FOLDER)
 
 printstyled("initializing library...\n"; bold=true, color=:cyan)
 @everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, IMMIRZI)
@@ -146,9 +146,7 @@ function heptapod_EPRL_propagator_matrix(cutoff, shells, jb)
                 end
 
                 amp = sum(ampt)
-
                 accumulated_propagator_matrix[row_index, column_index] += amp * dfj
-
             end
 
         end

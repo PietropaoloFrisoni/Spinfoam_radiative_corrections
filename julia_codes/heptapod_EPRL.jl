@@ -13,14 +13,10 @@ end
 
 length(ARGS) < 6 && error("please use these 6 arguments: data_sl2cfoam_next_folder    cutoff    shell_min    shell_max     Immirzi    store_folder")
 @eval @everywhere DATA_SL2CFOAM_FOLDER = $(ARGS[1])
-CUTOFF = parse(Int, ARGS[2])
 SHELL_MIN = parse(Int, ARGS[3])
 SHELL_MAX = parse(Int, ARGS[4])
 @eval @everywhere IMMIRZI = parse(Float64, $(ARGS[5]))
 @eval STORE_FOLDER = $(ARGS[6])
-
-STORE_FOLDER = "$(STORE_FOLDER)/data/EPRL/divergence/immirzi_$(IMMIRZI)/cutoff_$(CUTOFF)"
-mkpath(STORE_FOLDER)
 
 printstyled("precompiling packages...\n"; bold=true, color=:cyan)
 @everywhere begin
@@ -29,9 +25,15 @@ printstyled("precompiling packages...\n"; bold=true, color=:cyan)
 end
 println("done\n")
 
+CUTOFF_FLOAT = parse(Float64, ARGS[2])
+CUTOFF = HalfInt(CUTOFF_FLOAT)
+
 if (CUTOFF <= 1)
     error("please provide a larger cutoff")
 end
+
+STORE_FOLDER = "$(STORE_FOLDER)/data/EPRL/immirzi_$(IMMIRZI)/divergence/cutoff_$(CUTOFF_FLOAT)"
+mkpath(STORE_FOLDER)
 
 printstyled("initializing library...\n"; bold=true, color=:cyan)
 @everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, IMMIRZI)
