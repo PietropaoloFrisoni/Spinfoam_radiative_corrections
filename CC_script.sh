@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -A def-vidotto
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=8
-#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=7
+#SBATCH --cpus-per-task=2
 #SBATCH --mem-per-cpu=6G
 #SBATCH --time=0-4:00:00
 #SBATCH --job-name=heptapod_bubble
@@ -44,7 +44,7 @@ cp ${FASTWIG_TABLES_PATH}/* $SLURM_TMPDIR/
 echo "Running: ${CODE_TO_RUN}"
 echo
 
-${JULIA_DIR}/bin/julia -p $SLURM_TASKS_PER_NODE ${BASE_DIR}/julia_codes/${CODE_TO_RUN}.jl $SLURM_TMPDIR ${CUTOFF} ${SHELL_MIN} ${SHELL_MAX} ${IMMIRZI} ${STORE_FOLDER}
+${JULIA_DIR}/bin/julia -p $SLURM_TASKS_PER_NODE --threads $SLURM_CPUS_PER_TASK ${BASE_DIR}/julia_codes/${CODE_TO_RUN}.jl $SLURM_TMPDIR ${CUTOFF} ${SHELL_MIN} ${SHELL_MAX} ${IMMIRZI} ${STORE_FOLDER}
 
 echo "Compressing and copying computed boosters to ${BOOSTER_DIR}..."
 echo
