@@ -5,7 +5,7 @@ number_of_processes = nprocs()
 number_of_threads = Threads.nthreads()
 available_cpus = Sys.cpu_info()
 
-printstyled("\nHeptapod EPRL bubble computation parallelized on $(number_of_workers) worker(s) and $(number_of_threads) thread(s)\n\n"; bold=true, color=:blue)
+printstyled("\nHeptapod EPRL divergence parallelized on $(number_of_workers) worker(s) and $(number_of_threads) thread(s)\n\n"; bold=true, color=:blue)
 
 if (number_of_workers*number_of_threads > length(available_cpus))
     printstyled("WARNING: you are using more resources than available cores on this system. Performances will be affected\n\n"; bold=true, color=:red)
@@ -19,7 +19,7 @@ SHELL_MAX = parse(Int, ARGS[4])
 @eval @everywhere IMMIRZI = parse(Float64, $(ARGS[5]))
 @eval STORE_FOLDER = $(ARGS[6])
 
-STORE_FOLDER = "$(STORE_FOLDER)/data_folder/EPRL"
+STORE_FOLDER = "$(STORE_FOLDER)/data/EPRL/divergence/immirzi_$(IMMIRZI)/cutoff_$(CUTOFF)"
 mkpath(STORE_FOLDER)
 
 printstyled("precompiling packages...\n"; bold=true, color=:cyan)
@@ -37,7 +37,7 @@ printstyled("initializing library...\n"; bold=true, color=:cyan)
 @everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, IMMIRZI)
 println("done\n")
 
-function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
+function heptapod_EPRL_bubble(cutoff, shells)
 
     number_of_threads = Threads.nthreads()
 
@@ -47,7 +47,7 @@ function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
     # ib must be in range [0, 2jb]
     # (julia index starts from 1)
     ib = 0
-    ib_index = ib + 1
+    ib_index = 1
 
     ampls = Float64[]
 
@@ -157,17 +157,12 @@ function heptapod_EPRL_bubble(cutoff, shells, store_folder::String)
 
     end # partial cutoffs loop
 
-    # store partials 
-    if (cutoff > 1)
-        @save "$(store_folder)/heptapod_EPRL_ampls_cutoff_$(cutoff)_Immirzi_$(IMMIRZI).jld2" ampls
-    end
-
     ampls
 
 end
 
 printstyled("Pre-compiling the function...\n"; bold=true, color=:cyan)
-@time heptapod_EPRL_bubble(1, 0, "nothing");
+@time heptapod_EPRL_bubble(1, 0);
 println("done\n")
 sleep(1)
 
@@ -179,8 +174,8 @@ column_labels = String[]
 
 for Dl = SHELL_MIN:SHELL_MAX
 
-    printstyled("\nCurrent Dl = $(Dl)...\n"; bold=true, color=:cyan)
-    @time ampls = heptapod_EPRL_bubble(CUTOFF, Dl, STORE_FOLDER)
+    printstyled("\nCurrent Dl = $(Dl)...\n"; bold=true, color=:magenta)
+    @time ampls = heptapod_EPRL_bubble(CUTOFF, Dl)
     push!(column_labels, "Dl = $(Dl)")
     ampls_matrix[:, Dl-SHELL_MIN+1] = ampls[:]
 
@@ -188,6 +183,6 @@ end
 
 printstyled("\nSaving dataframe...\n"; bold=true, color=:cyan)
 df = DataFrame(ampls_matrix, column_labels)
-CSV.write("$(STORE_FOLDER)/heptapod_EPRL_bubble_cutoff_$(CUTOFF)_Immirzi_$(IMMIRZI)_Dl_min_$(SHELL_MIN)_Dl_max_$(SHELL_MAX).csv", df)
+CSV.write("$(STORE_FOLDER)/heptapod_Dl_min_$(SHELL_MIN)_Dl_max_$(SHELL_MAX).csv", df)
 
 printstyled("\nCompleted\n\n"; bold=true, color=:blue)

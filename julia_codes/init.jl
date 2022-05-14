@@ -13,3 +13,12 @@ function log(x...)
     println("[ ", now(), " ] - ", join(x, " ")...)
     flush(stdout)
 end
+
+# comunicate between processes
+macro retrieve_from_process(p, obj, mod=:Main)
+    quote
+        remotecall_fetch($(esc(p)), $(esc(mod)), $(QuoteNode(obj))) do m, o
+            Core.eval(m, o)
+        end
+    end
+end

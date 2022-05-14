@@ -1,13 +1,13 @@
 using Distributed
 
-printstyled("\nHeptapod BF bubble computation parallelized on $(nworkers()) worker(s)\n\n"; bold=true, color=:blue)
+printstyled("\nHeptapod BF divergence parallelized on $(nworkers()) worker(s)\n\n"; bold=true, color=:blue)
 
 length(ARGS) < 3 && error("please use these 3 arguments: data_sl2cfoam_next_folder    cutoff    store_folder")
 @eval @everywhere DATA_SL2CFOAM_FOLDER = $(ARGS[1])
 CUTOFF = parse(Int, ARGS[2])
 @eval STORE_FOLDER = $(ARGS[3])
 
-STORE_FOLDER = "$(STORE_FOLDER)/data_folder/BF"
+STORE_FOLDER = "$(STORE_FOLDER)/data/EPRL/divergence/cutoff_$(CUTOFF)"
 mkpath(STORE_FOLDER)
 
 printstyled("precompiling packages...\n"; bold=true, color=:cyan)
@@ -25,16 +25,14 @@ printstyled("initializing library...\n"; bold=true, color=:cyan)
 @everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, 0.123) # fictitious Immirzi 
 println("done\n")
 
-function heptapod_BF_bubble(cutoff, store_folder::String)
+function heptapod_BF_bubble(cutoff)
 
     # set boundary
     step = onehalf = half(1)
     jb = half(1)
     # ib must be in range [0, 2jb]
     # (julia index starts from 1)
-    ib = 0
-    # careful: this index won't work with ib!=0 and reduced range
-    ib_index = ib + 1
+    ib_index = 1
 
     ampls = Float64[]
 
@@ -114,25 +112,20 @@ function heptapod_BF_bubble(cutoff, store_folder::String)
 
     end # partial cutoffs loop
 
-    # store partials 
-    if (cutoff > 1)
-        @save "$(store_folder)/heptapod_BF_ampls_cutoff_$(cutoff).jld2" ampls
-    end
-
     ampls
 
 end
 
 printstyled("Pre-compiling the function...\n"; bold=true, color=:cyan)
-@time heptapod_BF_bubble(1, "nothing");
+@time heptapod_BF_bubble(1);
 println("done\n")
 sleep(1)
 
 printstyled("\nStarting computation with K = $(CUTOFF)...\n"; bold=true, color=:cyan)
-@time ampls = heptapod_BF_bubble(CUTOFF, STORE_FOLDER);
+@time ampls = heptapod_BF_bubble(CUTOFF);
 
 printstyled("\nSaving dataframe...\n"; bold=true, color=:cyan)
 df = DataFrame(amplitudes=ampls)
-CSV.write("$(STORE_FOLDER)/heptapod_BF_bubble_cutoff_$(CUTOFF).csv", df)
+CSV.write("$(STORE_FOLDER)/heptapod.csv", df)
 
 printstyled("\nCompleted\n\n"; bold=true, color=:blue)

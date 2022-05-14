@@ -2,7 +2,7 @@
 private_folder
 
 # Folder with data
-data_folder
+data
 
 # Folder with log files from ComputeCanada
 CC_output

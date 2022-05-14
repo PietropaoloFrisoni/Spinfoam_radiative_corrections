@@ -31,7 +31,7 @@ SHELL_MIN=0
 SHELL_MAX=10
 IMMIRZI=1
 STORE_FOLDER=${BASE_DIR}
-CODE_TO_RUN=heptapod_EPRL_bubble
+CODE_TO_RUN=heptapod_EPRL
 
 echo "Running on: $SLURM_NODELIST"
 echo
