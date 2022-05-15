@@ -39,7 +39,7 @@ printstyled("initializing library...\n"; bold=true, color=:cyan)
 @everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, IMMIRZI)
 println("done\n")
 
-function heptapod_EPRL_bubble(cutoff, shells)
+function heptapod_EPRL(cutoff, shells)
 
     number_of_threads = Threads.nthreads()
 
@@ -132,7 +132,8 @@ function heptapod_EPRL_bubble(cutoff, shells)
                 i7, i7_range = intertwiner_range(jb, jb, jb, j78)
 
                 amp_2 = 0.0
-                @turbo for i7 in 1:i7_range, i3 in 1:i3_range, i4 in 1:i4_range, i5 in 1:i5_range
+
+                @inbounds for i7 in 1:i7_range, i3 in 1:i3_range, i4 in 1:i4_range, i5 in 1:i5_range
                     amp_2 += v1.a[i3, ib_index, ib_index, i5, i4] * v2.a[i5, i7, i7, i3, i4]
                 end
 
@@ -164,11 +165,11 @@ function heptapod_EPRL_bubble(cutoff, shells)
 end
 
 printstyled("Pre-compiling the function...\n"; bold=true, color=:cyan)
-@time heptapod_EPRL_bubble(1, 0);
+@time heptapod_EPRL(1, 0);
 println("done\n")
 sleep(1)
 
-ampls_matrix = Array{Float64,2}(undef, 2 * CUTOFF + 1, SHELL_MAX - SHELL_MIN + 1)
+ampls_matrix = Array{Float64,2}(undef, convert(Int,2 * CUTOFF + 1), SHELL_MAX - SHELL_MIN + 1)
 
 printstyled("\nStarting computation with K = $(CUTOFF), Dl_min = $(SHELL_MIN), Dl_max = $(SHELL_MAX), Immirzi = $(IMMIRZI)...\n"; bold=true, color=:cyan)
 
@@ -177,7 +178,7 @@ column_labels = String[]
 for Dl = SHELL_MIN:SHELL_MAX
 
     printstyled("\nCurrent Dl = $(Dl)...\n"; bold=true, color=:magenta)
-    @time ampls = heptapod_EPRL_bubble(CUTOFF, Dl)
+    @time ampls = heptapod_EPRL(CUTOFF, Dl)
     push!(column_labels, "Dl = $(Dl)")
     ampls_matrix[:, Dl-SHELL_MIN+1] = ampls[:]
 
