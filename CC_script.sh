@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH -A def-vidotto
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=7
-#SBATCH --cpus-per-task=2
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=4
 #SBATCH --mem-per-cpu=6G
 #SBATCH --time=1-0:00:00
-#SBATCH --job-name=heptapod_prop
-#SBATCH --output=CLUSTER_COMPUTATION/heptapod_prop.log
-#SBATCH --error=CLUSTER_COMPUTATION/heptapod_prop.err
+#SBATCH --job-name=frogface
+#SBATCH --output=CLUSTER_COMPUTATION/frogface.log
+#SBATCH --error=CLUSTER_COMPUTATION/frogface.err
 #SBATCH --mail-type=BEGIN,FAIL,END
 #SBATCH --mail-user=pfrisoni@uwo.ca
 
@@ -32,7 +32,7 @@ SHELL_MAX=10
 IMMIRZI=1
 STORE_FOLDER=${BASE_DIR}/CLUSTER_COMPUTATIONS
 BSPIN=0.5
-CODE_TO_RUN=heptapod_EPRL_propagator_matrix
+CODE_TO_RUN=frogface_EPRL
 
 echo "Running on: $SLURM_NODELIST"
 echo
@@ -45,12 +45,12 @@ cp ${FASTWIG_TABLES_PATH}/* $SLURM_TMPDIR/
 echo "Running: ${CODE_TO_RUN}"
 echo
 
-${JULIA_DIR}/bin/julia -p $SLURM_TASKS_PER_NODE --threads $SLURM_CPUS_PER_TASK ${BASE_DIR}/julia_codes/${CODE_TO_RUN}.jl $SLURM_TMPDIR ${CUTOFF} ${SHELL_MIN} ${SHELL_MAX} ${IMMIRZI} ${BSPIN} ${STORE_FOLDER}
+${JULIA_DIR}/bin/julia -p $SLURM_TASKS_PER_NODE --threads $SLURM_CPUS_PER_TASK ${BASE_DIR}/julia_codes/${CODE_TO_RUN}.jl $SLURM_TMPDIR ${CUTOFF} ${SHELL_MIN} ${SHELL_MAX} ${IMMIRZI} ${STORE_FOLDER}
 
 echo "Compressing and copying computed boosters to ${BOOSTER_DIR}..."
 echo
 
-tar -czvf ${BOOSTER_DIR}/${CODE_TO_RUN}_SHELL_MIN_${SHELL_MIN}_SHELL_MAX_${SHELL_MAX}_IMMIRZI_${IMMIRZI}_CUTOFF_${CUTOFF}_BSPIN_${BSPIN}.tar.gz $SLURM_TMPDIR/vertex
+tar -czvf ${BOOSTER_DIR}/${CODE_TO_RUN}_SHELL_MIN_${SHELL_MIN}_SHELL_MAX_${SHELL_MAX}_IMMIRZI_${IMMIRZI}_CUTOFF_${CUTOFF}.tar.gz $SLURM_TMPDIR/vertex
 
 echo "Completed"
 echo

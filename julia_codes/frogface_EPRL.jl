@@ -99,8 +99,8 @@ function frogface_EPRL(cutoff, shells)
                 isempty(spin_j45) && continue
 
                 # must be computed
-                push!(spin_j45_ext, spin_j45)
                 push!(spin_j23, j23)
+                push!(spin_j45_ext, spin_j45)
 
             end
 
@@ -110,15 +110,13 @@ function frogface_EPRL(cutoff, shells)
 
             # must be computed
             push!(spin_j25_j34_pcutoff, [j25, j34])
+            push!(spin_j23_pcutoff, spin_j23)            
             push!(spin_j45_pcutoff, spin_j45_ext)
-            push!(spin_j23_pcutoff, spin_j23)
 
         end
 
-        #println(spin_j25_j34_pcutoff)
-        #println(spin_j23_pcutoff)
-        #println(spin_j45_pcutoff)
-        #println(" ")
+        println(size(spin_j25_j34_pcutoff))
+        println(size(spin_j23_pcutoff))
 
         if isempty(spin_j25_j34_pcutoff)
             push!(ampls, 0.0)
