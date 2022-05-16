@@ -65,8 +65,6 @@ function frogface_EPRL(cutoff, shells)
 
         for j25::HalfInt = 0:onehalf:pcutoff, j34::HalfInt = 0:onehalf:pcutoff
 
-            # I am 95% sure that j23 and j45 have exactly the same range for symmetry, but who cares?
-
             spin_j23 = HalfInt8[]
             spin_j45_ext = Vector{HalfInt8}[]
 
@@ -115,9 +113,6 @@ function frogface_EPRL(cutoff, shells)
 
         end
 
-        println(size(spin_j25_j34_pcutoff))
-        println(size(spin_j23_pcutoff))
-
         if isempty(spin_j25_j34_pcutoff)
             push!(ampls, 0.0)
             continue
@@ -133,7 +128,7 @@ function frogface_EPRL(cutoff, shells)
             i4, i4_range = intertwiner_range(jb, j25, j25, j34)
 
             # dim internal faces
-            dfj = dim(j25)^2 * dim(j34)
+            dfj = dim(j25) * dim(j34)
 
             ampt = zeros(number_of_threads)
 
@@ -166,11 +161,11 @@ function frogface_EPRL(cutoff, shells)
                         amp_3 += v1.a[i5, i5, i3, i4, ib_index] * v2.a[i4, i3, i2, i2, ib_index]
                     end
 
-                    amp_2 += amp_3 * sqrt(dim(j45))
+                    amp_2 += amp_3 * dim(j45)
 
                 end
 
-                ampt[Threads.threadid()] += amp_2 * sqrt(dim(j23))
+                ampt[Threads.threadid()] += amp_2 * dim(j23)
 
             end
 

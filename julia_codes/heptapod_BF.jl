@@ -25,7 +25,7 @@ STORE_FOLDER = "$(STORE_FOLDER)/data/BF/cutoff_$(CUTOFF_FLOAT)"
 mkpath(STORE_FOLDER)
 
 printstyled("initializing library...\n"; bold=true, color=:cyan)
-@everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, 0.123) # fictitious Immirzi 
+@everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, 0.1) # fictitious Immirzi 
 println("done\n")
 
 function heptapod_BF_bubble(cutoff)
@@ -36,7 +36,7 @@ function heptapod_BF_bubble(cutoff)
     # ib must be in range [0, 2jb]
     # (julia index starts from 1)
     ib_index = 1
-
+    
     ampls = Float64[]
 
     # loop over partial cutoffs
@@ -90,10 +90,11 @@ function heptapod_BF_bubble(cutoff)
             v2 = vertex_BF_compute([j34, jb, jb, j45, jb, jb, j35, j78, jb, jb])
 
             # dim internal faces
-            dfj = dim(j45) * dim(j34) * dim(j35) * sqrt(dim(j78))
+            dfj = dim(j45) * dim(j34) * dim(j35) * dim(j78)
 
             # intertwiner contractions
             amp = 0.0
+            
             @turbo for i7 in 1:i7_range, i3 in 1:i3_range, i4 in 1:i4_range, i5 in 1:i5_range
                 amp += v1.a[i3, ib_index, ib_index, i5, i4] * v2.a[i5, i7, i7, i3, i4]
             end

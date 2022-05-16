@@ -88,7 +88,7 @@ function frogface_BF(cutoff)
             v2 = vertex_BF_compute([jb, jb, jb, jb, j23, jb, j25, jb, j25, j34])
 
             # dim internal faces
-            dfj = dim(j25)^2 * dim(j34) * sqrt(dim(j45)) * sqrt(dim(j23))
+            dfj = dim(j25) * dim(j34) * dim(j45) * dim(j23)
 
             # intertwiner contractions
             amp = 0.0

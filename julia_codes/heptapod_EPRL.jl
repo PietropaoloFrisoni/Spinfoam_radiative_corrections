@@ -46,10 +46,6 @@ function heptapod_EPRL(cutoff, shells)
     # set boundary
     step = onehalf = half(1)
     jb = half(1)
-    # ib must be in range [0, 2jb]
-    # (julia index starts from 1)
-    ib = 0
-    ib_index = 1
 
     ampls = Float64[]
 
@@ -114,7 +110,7 @@ function heptapod_EPRL(cutoff, shells)
             i5, i5_range = intertwiner_range(j45, j35, jb, jb)
             i4, i4_range = intertwiner_range(j34, jb, jb, j45)
             i3, i3_range = intertwiner_range(jb, jb, j35, j34)
-            reduced_range = (i4, i5, (ib, ib), (ib, ib), i3)
+            reduced_range = (i4, i5, (0, 0), (0, 0), i3)
 
             # compute first EPRL vertex
             v1 = vertex_compute([j45, jb, jb, j34, jb, jb, j35, jb, jb, jb], shells, reduced_range; result=result_return)
@@ -134,10 +130,10 @@ function heptapod_EPRL(cutoff, shells)
                 amp_2 = 0.0
 
                 @inbounds for i7 in 1:i7_range, i3 in 1:i3_range, i4 in 1:i4_range, i5 in 1:i5_range
-                    amp_2 += v1.a[i3, ib_index, ib_index, i5, i4] * v2.a[i5, i7, i7, i3, i4]
+                    amp_2 += v1.a[i3, 1, 1, i5, i4] * v2.a[i5, i7, i7, i3, i4]
                 end
 
-                ampt[Threads.threadid()] += amp_2 * sqrt(dim(j78))
+                ampt[Threads.threadid()] += amp_2 * dim(j78)
 
             end
 

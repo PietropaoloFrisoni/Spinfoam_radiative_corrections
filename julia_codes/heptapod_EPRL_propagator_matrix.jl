@@ -43,8 +43,6 @@ println("done\n")
 
 function heptapod_EPRL_propagator_matrix(cutoff, shells, jb)
 
-    number_of_threads = Threads.nthreads()
-
     step = onehalf = half(1)
 
     DIM = dim(jb)
@@ -57,49 +55,35 @@ function heptapod_EPRL_propagator_matrix(cutoff, shells, jb)
 
     # loop over partial cutoffs
     for pcutoff = 0:step:cutoff
-
-        # generate a lists with spins to compute
-        spin_j45_j34_j35_pcutoff = Vector{HalfInt8}[]
-        spin_j78_pcutoff = Vector{HalfInt8}[]
+        # generate a list of bulk spins to compute
+        bulk_spins_pcutoff = NTuple{4,HalfInt}[]
 
         for j45::HalfInt = 0:onehalf:pcutoff, j34::HalfInt = 0:onehalf:pcutoff,
-            j35::HalfInt = 0:onehalf:pcutoff
+            j35::HalfInt = 0:onehalf:pcutoff, j78::HalfInt = 0:onehalf:pcutoff
 
-            spin_j78 = HalfInt8[]
+            # skip if computed in lower partial cutoff
+            j45 <= (pcutoff - step) && j34 <= (pcutoff - step) &&
+                j35 <= (pcutoff - step) && j78 <= (pcutoff - step) && continue
 
-            for j78::HalfInt = 0:onehalf:pcutoff
+            # skip if any intertwiner range empty
+            i7, _ = intertwiner_range(jb, jb, jb, j78)
+            i5, _ = intertwiner_range(j45, j35, jb, jb)
+            i4, _ = intertwiner_range(j34, jb, jb, j45)
+            i3, _ = intertwiner_range(jb, jb, j35, j34)
+            i8, _ = intertwiner_range(j78, jb, jb, jb)
 
-                # skip if computed in lower partial cutoff
-                j45 <= (pcutoff - step) && j34 <= (pcutoff - step) &&
-                    j35 <= (pcutoff - step) && j78 <= (pcutoff - step) && continue
-
-                # skip if any intertwiner range empty
-                i7, _ = intertwiner_range(jb, jb, jb, j78)
-                i5, _ = intertwiner_range(j45, j35, jb, jb)
-                i4, _ = intertwiner_range(j34, jb, jb, j45)
-                i3, _ = intertwiner_range(jb, jb, j35, j34)
-                i8, _ = intertwiner_range(j78, jb, jb, jb)
-
-                isempty(i7) && continue
-                isempty(i5) && continue
-                isempty(i4) && continue
-                isempty(i3) && continue
-                isempty(i8) && continue
-
-                # must be computed
-                push!(spin_j78, j78)
-
-            end
-
-            isempty(spin_j78) && continue
+            isempty(i7) && continue
+            isempty(i5) && continue
+            isempty(i4) && continue
+            isempty(i3) && continue
+            isempty(i8) && continue
 
             # must be computed
-            push!(spin_j45_j34_j35_pcutoff, [j45, j34, j35])
-            push!(spin_j78_pcutoff, spin_j78)
+            push!(bulk_spins_pcutoff, (j45, j34, j35, j78))
 
         end
 
-        if isempty(spin_j45_j34_j35_pcutoff)
+        if isempty(bulk_spins_pcutoff)
             pcutoff_index += 1
             for column_index = 1:1:DIM, row_index = 1:1:DIM
                 propagator_matrix[row_index, column_index, pcutoff_index] = 0.0
@@ -107,46 +91,34 @@ function heptapod_EPRL_propagator_matrix(cutoff, shells, jb)
             continue
         end
 
-        @time tampl = @sync @distributed for spin_index in eachindex(spin_j45_j34_j35_pcutoff)
+        @sync @distributed for bulk_spins in bulk_spins_pcutoff
 
-            j45 = spin_j45_j34_j35_pcutoff[spin_index][1]
-            j34 = spin_j45_j34_j35_pcutoff[spin_index][2]
-            j35 = spin_j45_j34_j35_pcutoff[spin_index][3]
+            j45, j34, j35, j78 = bulk_spins
 
             # range of intertwiners
+            i7, i7_range = intertwiner_range(jb, jb, jb, j78)
             i5, i5_range = intertwiner_range(j45, j35, jb, jb)
             i4, i4_range = intertwiner_range(j34, jb, jb, j45)
             i3, i3_range = intertwiner_range(jb, jb, j35, j34)
 
-            # compute first EPRL vertex
+            # compute EPRL vertices
             v1 = vertex_compute([j45, jb, jb, j34, jb, jb, j35, jb, jb, jb], shells; result=result_return)
+            v2 = vertex_compute([j34, jb, jb, j45, jb, jb, j35, j78, jb, jb], shells; result=result_return)
 
             # dim internal faces
-            dfj = dim(j45) * dim(j34) * dim(j35)
-
-            ampt = zeros(number_of_threads)
+            dfj = dim(j45) * dim(j34) * dim(j35) * dim(j78)
 
             for column_index = 1:1:DIM, row_index = column_index:1:DIM
 
-                # TODO: move parallelization outside in the case of propagator
-                Threads.@threads for j78 in spin_j78_pcutoff[spin_index]
+                # intertwiner contractions
+                amp = 0.0
 
-                    # compute second EPRL vertex
-                    v2 = vertex_compute([j34, jb, jb, j45, jb, jb, j35, j78, jb, jb], shells; result=result_return)
-
-                    i7, i7_range = intertwiner_range(jb, jb, jb, j78)
-
-                    amp_2 = 0.0
-                    @turbo for i7 in 1:i7_range, i3 in 1:i3_range, i4 in 1:i4_range, i5 in 1:i5_range
-                        amp_2 += v1.a[i3, column_index, row_index, i5, i4] * v2.a[i5, i7, i7, i3, i4]
-                    end
-
-                    ampt[Threads.threadid()] += amp_2 * sqrt(dim(j78))
-
+                @inbounds for i7 in 1:i7_range, i3 in 1:i3_range, i4 in 1:i4_range, i5 in 1:i5_range
+                    amp += v1.a[i3, row_index, column_index, i5, i4] * v2.a[i5, i7, i7, i3, i4]
                 end
 
-                amp = sum(ampt)
                 accumulated_propagator_matrix[row_index, column_index] += amp * dfj
+
             end
 
         end
@@ -171,8 +143,8 @@ function heptapod_EPRL_propagator_matrix(cutoff, shells, jb)
             propagator_matrix[row_index, column_index, pcutoff_index] = propagator_matrix[column_index, row_index, pcutoff_index]
         end
 
-        # println("Matrix propagator at cutoff $pcutoff is equal to:")
-        # println(propagator_matrix[:, :, cutoff_index], "\n")
+        #println("Matrix propagator at cutoff $pcutoff is equal to:")
+        #println(propagator_matrix[:, :, pcutoff_index], "\n")
 
     end # partial cutoffs loop
 
