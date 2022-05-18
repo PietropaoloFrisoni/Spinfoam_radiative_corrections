@@ -92,6 +92,7 @@ function frogface_BF(cutoff)
 
             # intertwiner contractions
             amp = 0.0
+            
             for i2 in 1:i2_range, i3 in 1:i3_range, i4 in 1:i4_range, i5 in 1:i5_range
                 amp += v1.a[i5, i5, i3, i4, ib_index] * v2.a[i4, i3, i2, i2, ib_index]
             end
