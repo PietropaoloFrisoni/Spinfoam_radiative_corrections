@@ -46,10 +46,6 @@ function frogface_EPRL(cutoff, shells)
     # set boundary
     step = onehalf = half(1)
     jb = half(1)
-    # ib must be in range [0, 2jb]
-    # (julia index starts from 1)
-    ib = 0
-    ib_index = 1
 
     ampls = Float64[]
 
@@ -138,7 +134,7 @@ function frogface_EPRL(cutoff, shells)
 
                 # range of intertwiners
                 i2, i2_range = intertwiner_range(j23, jb, j25, jb)
-                reduced_range_v2 = ((ib, ib), i2, i2, i3, i4)
+                reduced_range_v2 = ((0, 0), i2, i2, i3, i4)
 
                 # compute second EPRL vertex
                 v2 = vertex_compute([jb, jb, jb, jb, j23, jb, j25, jb, j25, j34], shells, reduced_range_v2; result=result_return)
@@ -149,7 +145,7 @@ function frogface_EPRL(cutoff, shells)
 
                     # range of intertwiners
                     i5, i5_range = intertwiner_range(j45, jb, j25, jb)
-                    reduced_range_v1 = ((ib, ib), i4, i3, i5, i5)
+                    reduced_range_v1 = ((0, 0), i4, i3, i5, i5)
 
                     # compute first EPRL vertex
                     v1 = vertex_compute([jb, jb, jb, jb, j34, j25, j25, jb, jb, j45], shells, reduced_range_v1; result=result_return)
@@ -158,7 +154,7 @@ function frogface_EPRL(cutoff, shells)
 
                     # LoopVectorization not safe
                     @inbounds for i2 in 1:i2_range, i3 in 1:i3_range, i4 in 1:i4_range, i5 in 1:i5_range
-                        amp_3 += v1.a[i5, i5, i3, i4, ib_index] * v2.a[i4, i3, i2, i2, ib_index]
+                        amp_3 += v1.a[i5, i5, i3, i4, 1] * v2.a[i4, i3, i2, i2, 1]
                     end
 
                     amp_2 += amp_3 * dim(j45)

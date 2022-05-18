@@ -81,9 +81,9 @@ function goat_BF(cutoff)
 
             # range of intertwiners
             i1, i1_range = intertwiner_range(jb, j25, j25, jb)
-            i2, i2_range  = intertwiner_range(j34, jb, j25, jb)
-            i3, i3_range  = intertwiner_range(j23, j25, j25, jb)
-            i4, i4_range  = intertwiner_range(j45, j25, j25, jb)
+            i2, i2_range = intertwiner_range(j34, jb, j25, jb)
+            i3, i3_range = intertwiner_range(j23, j25, j25, jb)
+            i4, i4_range = intertwiner_range(j45, j25, j25, jb)
 
             # compute BF vertices
             v1 = vertex_BF_compute([jb, j25, j25, jb, jb, jb, jb, j34, jb, jb])
