@@ -6,9 +6,8 @@ authors:
       orcid: https://orcid.org/0000-0001-7341-0682
     - family-names: Frisoni
       given-names: Pietropaolo
-      orcid: https://orcid.org/0000-0001-7341-0682
 title: 'Radiative corrections to the EPRL spin foam propagator'
-version: 1.0
+version: 1.0.1
 doi: TODO
 date-released: 2022-05-20
 url: https://github.com/PietropaoloFrisoni/Spinfoam_radiative_corrections
