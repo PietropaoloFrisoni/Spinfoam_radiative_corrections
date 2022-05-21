@@ -25,7 +25,7 @@ STORE_FOLDER = "$(STORE_FOLDER)/data/BF/cutoff_$(CUTOFF_FLOAT)"
 mkpath(STORE_FOLDER)
 
 printstyled("initializing library...\n"; bold=true, color=:cyan)
-@everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, 0.1) # fictitious Immirzi 
+@everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, 0.123) # fictitious Immirzi 
 println("done\n")
 
 function heptapod_BF_bubble(cutoff)

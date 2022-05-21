@@ -28,8 +28,7 @@ printstyled("initializing library...\n"; bold=true, color=:cyan)
 @everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, 0.123) # fictitious Immirzi 
 println("done\n")
 
-# values do not make sense
-# TODO: understand what's the issue
+
 function goat_BF(cutoff)
 
     # set boundary
@@ -47,8 +46,8 @@ function goat_BF(cutoff)
         # generate a list of bulk spins to compute
         bulk_spins_pcutoff = NTuple{4,HalfInt}[]
 
-        for j25::HalfInt = 0:onehalf:pcutoff, j34::HalfInt = 0:onehalf:pcutoff,
-            j23::HalfInt = 0:onehalf:pcutoff, j45::HalfInt = 0:onehalf:pcutoff
+        for j45::HalfInt = 0:onehalf:pcutoff, j34::HalfInt = 0:onehalf:pcutoff,
+            j23::HalfInt = 0:onehalf:pcutoff, j25::HalfInt = 0:onehalf:pcutoff
 
             # skip if computed in lower partial cutoff
             j25 <= (pcutoff - step) && j34 <= (pcutoff - step) &&
@@ -57,8 +56,8 @@ function goat_BF(cutoff)
             # skip if any intertwiner range empty
             i1, _ = intertwiner_range(jb, j25, j25, jb)
             i2, _ = intertwiner_range(j34, jb, j25, jb)
-            i3, _ = intertwiner_range(j23, j25, j25, jb)
-            i4, _ = intertwiner_range(j45, j25, j25, jb)
+            i3, _ = intertwiner_range(jb, j23, j25, jb)
+            i4, _ = intertwiner_range(jb, j45, j25, jb)
 
             isempty(i1) && continue
             isempty(i2) && continue
@@ -82,12 +81,12 @@ function goat_BF(cutoff)
             # range of intertwiners
             i1, i1_range = intertwiner_range(jb, j25, j25, jb)
             i2, i2_range = intertwiner_range(j34, jb, j25, jb)
-            i3, i3_range = intertwiner_range(j23, j25, j25, jb)
-            i4, i4_range = intertwiner_range(j45, j25, j25, jb)
+            i3, i3_range = intertwiner_range(jb, j23, j25, jb)
+            i4, i4_range = intertwiner_range(jb, j45, j25, jb)
 
             # compute BF vertices
             v1 = vertex_BF_compute([jb, j25, j25, jb, jb, jb, jb, j34, jb, jb])
-            v2 = vertex_BF_compute([jb, j25, j25, jb, j23, j25, j25, jb, j25, j45])
+            v2 = vertex_BF_compute([jb, j25, j25, jb, jb, j23, j25, jb, j45, jb])
 
             # dim internal faces
             dfj = dim(j25) * dim(j34) * dim(j45) * dim(j23)
@@ -96,10 +95,10 @@ function goat_BF(cutoff)
             amp = 0.0
 
             for i1 in 1:i1_range, i3 in 1:i3_range, i2 in 1:i2_range, i4 in 1:i4_range
-                amp += v1.a[ib_index, i2, i2, ib_index, i1] * v2.a[i4, i4, i3, i3, i1]
+                amp += v1.a[ib_index, i2, i2, ib_index, i1] * v2.a[i4, i3, i4, i3, i1]
             end
-
-            amp * dfj
+             
+            amp * dfj * (-1)^(2*j23)
 
         end
 
