@@ -1,6 +1,6 @@
 # Radiative corrections to the EPRL spin foam propagator
 
-***The julia codes are parallelized on the available cores using a hybrid multilevel parallelization scheme, exploiting the available processes, threads and loop vectorization.***_It is therefore advisable for the performance to use a number of workers * threads equal to or less than the physical number of cores present on the system._
+***The julia codes are parallelized on the available cores using a hybrid multilevel parallelization scheme, exploiting the available processes, threads and loop vectorization.*** _It is therefore advisable for the performance to use a number of workers * threads equal to or less than the physical number of cores present on the system._
 
 A full list of the employed julia packages can be found in ./julia_codes/pkgs.jl. _Before executing the codes, all packages must be installed._
 
