@@ -1,8 +1,8 @@
 # Radiative corrections to the EPRL spin foam propagator
 
-**_The Julia codes are parallelized on the available cores using a hybrid multilevel parallelization scheme, exploiting the available processes, threads and loop vectorization._** _It is therefore advisable for the performance to use a number of workers \* threads equal to or less than the physical number of cores present on the system._
+**_The Julia codes are parallelized on the available cores using a hybrid multilevel parallelization scheme, exploiting the available processes, threads and loop vectorization._** It is therefore advisable for the performance to use a number of workers \* threads equal to or less than the physical number of cores present on the system.
 
-A full list of the employed Julia packages can be found in `./julia*codes/pkgs.jl`. **Before executing the codes, all packages must be installed.**
+A full list of the employed Julia packages can be found in `./julia_codes/pkgs.jl`. **Before executing the codes, all packages must be installed.**
 
 **The Julia's Just-in-Time compiler is such that the first execution of functions is considerably slower that following ones, and it also allocates much more memory**. To avoid this, you can use the [DaemonMode package](https://github.com/dmolina/DaemonMode.jl).
 
