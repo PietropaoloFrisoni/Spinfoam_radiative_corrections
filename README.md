@@ -6,7 +6,7 @@ A full list of the employed julia packages can be found in ./julia_codes/pkgs.jl
 
 **Notice that the julia's Just-in-Time compiler is such that the first execution of functions is considerably slower that following ones, and it also allocates much more memory**. To avoid this, you can use the [DaemonMode package](https://github.com/dmolina/DaemonMode.jl).
 
-We provide the ipe file *diagrams_code_notation* with the explicit structure of the spinfoams corresponding to the diagrams. The spins and intertwiners labels match exactly the ones implemented in the julia scripts. _We provide the computed data in the *data* folder._
+We provide the ipe file *diagrams_code_notation* with the explicit structure of the spinfoams corresponding to the diagrams. The spins and intertwiners labels match exactly the ones implemented in the julia scripts. We provide the computed data in the *data* folder.
 
 Finally, we leave the Mathematica notebooks used for the data analysis in the *Notebooks* folder.
 
