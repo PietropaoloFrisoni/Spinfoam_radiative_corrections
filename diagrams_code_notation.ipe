@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
-<ipe version="70218" creator="Ipe 7.2.23">
-<info created="D:20220509213719" modified="D:20220527085534"/>
+<ipe version="70218" creator="Ipe 7.2.24">
+<info created="D:20220509213719" modified="D:20220529175749"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -319,9 +319,9 @@ h
 <page>
 <layer name="SelfEnergy"/>
 <layer name="Frogface"/>
-<layer name="Penguin"/>
+<layer name="Heptapod"/>
 <layer name="Goat"/>
-<view layers="Goat" active="Goat"/>
+<view layers="Heptapod" active="Heptapod"/>
 <group layer="SelfEnergy" matrix="0 1 -1 0 544 184">
 <path stroke="black">
 192 464 m
@@ -1450,7 +1450,7 @@ h
 96 256
 96 184 c
 </path>
-<path matrix="0 1 -1 0 584.067 351.526" stroke="black" rarrow="normal/normal">
+<path matrix="0 1 -1 0 584.067 351.526" stroke="black" arrow="normal/normal">
 144 184 m
 160.115 208
 192.199 208 c
@@ -1501,7 +1501,7 @@ h
 24 256 m
 40 256 l
 </path>
-<path matrix="0 1 -1 0 584.067 351.526" stroke="black" arrow="normal/normal">
+<path matrix="0 1 -1 0 584.067 351.526" stroke="black" rarrow="normal/normal">
 144 376 m
 160.066 352
 192.065 352 c
@@ -1554,8 +1554,8 @@ h
 184.001 255.999 m
 168 256 l
 </path>
-<text layer="Penguin" matrix="1 0 0 1 -247.087 -79.8598" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="407.897" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">V1 = \left[    j_{45}, j_b, j_b, j_{34} , \hspace{4mm}  j_b, j_b, j_{35},  \hspace{4mm}  j_{b}, j_{b},  \hspace{4mm}   j_{b} ;  \hspace{4mm} i_4 , i_5, i_1, i_2, i_3 \right]</text>
-<text matrix="1 0 0 1 -248.368 -110.578" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="414.626" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">V2 = \left[    j_{34}, j_b, j_b,  j_{45}, \hspace{4mm}  j_{b}, j_{b}, j_{35},  \hspace{4mm}  j_{78}, j_b,  \hspace{4mm}   j_b ;  \hspace{4mm}  i_4, i_3, i_8, i_7 , i_5 \right]</text>
+<text layer="Heptapod" matrix="1 0 0 1 -247.087 -79.8598" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="406.145" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">V1 = \left[    j_{45}, j_b, j_b, j_{34} , \hspace{4mm}  j_b, j_b, j_{35},  \hspace{4mm}  j_{b}, j_{b},  \hspace{4mm}   j_{b} ;  \hspace{4mm} i_1 , i_4, i_b, i_b, i_3 \right]</text>
+<text matrix="1 0 0 1 -248.368 -110.578" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="414.626" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">V2 = \left[    j_{34}, j_b, j_b,  j_{45}, \hspace{4mm}  j_{b}, j_{b}, j_{35},  \hspace{4mm}  j_{78}, j_b,  \hspace{4mm}   j_b ;  \hspace{4mm}  i_1, i_3, i_2, i_2 , i_4 \right]</text>
 <group matrix="1 0 0 1 186.818 -4.35589">
 <path stroke="black">
 192 464 m
@@ -1958,16 +1958,16 @@ h
 </path>
 <text matrix="1 0 0 1 -30.142 132.606" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="19.831" height="11.761" depth="0" valign="baseline" size="LARGE">V1</text>
 <text matrix="1 0 0 1 -30.7822 346.992" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="19.831" height="11.761" depth="0" valign="baseline" size="LARGE">V2</text>
-<text matrix="1 0 0 1 81.211 -108.658" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_1</text>
-<text matrix="1 0 0 1 108.088 -108.018" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_2</text>
+<text matrix="1 0 0 1 81.211 -108.658" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.114" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_b</text>
+<text matrix="1 0 0 1 108.088 -108.018" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.114" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_b</text>
 <text matrix="1 0 0 1 202.162 -48.5021" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_3</text>
-<text matrix="1 0 0 1 144.566 68.61" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_4</text>
-<text matrix="1 0 0 1 -14.1428 -51.7023" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_5</text>
+<text matrix="1 0 0 1 144.566 68.61" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_1</text>
+<text matrix="1 0 0 1 -14.1428 -51.7023" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_4</text>
 <text matrix="1 0 0 1 202.162 244.598" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_3</text>
-<text matrix="1 0 0 1 -14.7829 242.679" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_5</text>
-<text matrix="1 0 0 1 144.566 124.286" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_4</text>
-<text matrix="1 0 0 1 10.175 300.274" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_7</text>
-<text matrix="1 0 0 1 175.284 300.274" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_8</text>
+<text matrix="1 0 0 1 -14.7829 242.679" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_4</text>
+<text matrix="1 0 0 1 144.566 124.286" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_1</text>
+<text matrix="1 0 0 1 10.175 300.274" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_2</text>
+<text matrix="1 0 0 1 175.284 300.274" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_2</text>
 <text matrix="1 0 0 1 89.53 21.2532" transformations="translations" pos="183.588 415.869" stroke="red" type="label" width="19.178" height="11.284" depth="3.35" valign="baseline" size="LARGE" style="math">j_{35}</text>
 <text matrix="1 0 0 1 89.531 188.282" transformations="translations" pos="183.588 415.869" stroke="red" type="label" width="19.178" height="11.284" depth="3.35" valign="baseline" size="LARGE" style="math">j_{35}</text>
 <text matrix="1 0 0 1 149.047 154.365" transformations="translations" pos="183.588 415.869" stroke="darkorange" type="label" width="19.178" height="11.284" depth="3.35" valign="baseline" size="LARGE" style="math">j_{34}</text>
@@ -1986,14 +1986,14 @@ h
 <text matrix="1 0 0 1 125.368 131.966" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_2</text>
 <text matrix="1 0 0 1 126.008 105.087" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_3</text>
 <text matrix="1 0 0 1 74.8119 103.807" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_3</text>
-<text matrix="1 0 0 1 74.1715 131.326" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_5</text>
+<text matrix="1 0 0 1 74.1715 131.326" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_1</text>
 <text matrix="1 0 0 1 288.557 5.89395" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_4</text>
 <text matrix="1 0 0 1 -85.8179 5.89395" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_4</text>
 <text matrix="1 0 0 1 -103.097 165.243" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.114" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_b</text>
-<text matrix="1 0 0 1 -85.1785 224.12" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_5</text>
+<text matrix="1 0 0 1 -85.1785 224.12" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_1</text>
 <text matrix="1 0 0 1 -273.325 262.517" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="19.831" height="11.761" depth="0" valign="baseline" size="LARGE">V1</text>
 <text matrix="1 0 0 1 227.122 263.797" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="19.831" height="11.761" depth="0" valign="baseline" size="LARGE">V2</text>
-<text matrix="1 0 0 1 -213.809 35.3321" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="413.75" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">V1 = \left[    j_{b}, j_b, j_b, j_{b} , \hspace{4mm}  j_{34}, j_{25}, j_{25},  \hspace{4mm}  j_{b}, j_{b},  \hspace{4mm}   j_{45} ;  \hspace{4mm} i_b , i_4, i_3, i_5, i_5 \right]</text>
+<text matrix="1 0 0 1 -213.809 35.3321" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="413.75" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">V1 = \left[    j_{b}, j_b, j_b, j_{b} , \hspace{4mm}  j_{34}, j_{25}, j_{25},  \hspace{4mm}  j_{b}, j_{b},  \hspace{4mm}   j_{45} ;  \hspace{4mm} i_b , i_4, i_3, i_1, i_1 \right]</text>
 <text matrix="1 0 0 1 -213.809 3.33431" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="413.75" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">V2 = \left[    j_{b}, j_b, j_b, j_{b} , \hspace{4mm}  j_{23}, j_{b}, j_{25},  \hspace{4mm}  j_{b}, j_{25},  \hspace{4mm}   j_{34} ;  \hspace{4mm} i_b , i_2, i_2, i_3, i_4 \right]</text>
 <text layer="Goat" matrix="1 0 0 1 60.0926 -69.6204" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_1</text>
 <text matrix="1 0 0 1 61.3725 -15.224" transformations="translations" pos="183.588 415.869" stroke="black" type="label" width="8.726" height="7.841" depth="1.79" valign="baseline" size="large" style="math">i_1</text>
@@ -2014,8 +2014,7 @@ h
 <text matrix="1 0 0 1 -209.971 -204.012" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="421.355" height="12.896" depth="4.29" valign="baseline" size="LARGE" style="math">V2 = \left[    j_{b}, j_{25}, j_{25},  j_{b}, \hspace{4mm}  j_{b}, j_{23}, j_{25},  \hspace{4mm}  j_{b}, j_{45},  \hspace{4mm}   j_{b} ;  \hspace{4mm}  i_1, i_3, i_4, i_3 , i_4 \right]</text>
 <text matrix="1 0 0 1 -174.132 7.81431" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="19.831" height="11.761" depth="0" valign="baseline" size="LARGE">V1</text>
 <text matrix="1 0 0 1 -152.373 275.316" transformations="translations" pos="302.62 271.238" stroke="black" type="label" width="19.831" height="11.761" depth="0" valign="baseline" size="LARGE">V2</text>
-<text layer="SelfEnergy" matrix="1 0 0 1 -105.593 -46.0774" transformations="translations" pos="208.546 538.74" stroke="black" type="label" width="312.13" height="14.348" depth="4.02" valign="baseline" size="huge">Già ampiamente trattata, we&apos;re done!</text>
-<path layer="Goat" stroke="black">
+<path stroke="black">
 184.067 495.526 m
 79.9145 495.223
 88.8739 634.734
