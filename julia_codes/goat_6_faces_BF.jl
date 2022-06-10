@@ -76,7 +76,7 @@ function goat_BF(cutoff)
             push!(ampls, 0.0)
             continue
         end
-
+        
         @time tampl = @sync @distributed (+) for bulk_spins in bulk_spins_pcutoff
 
             j25, j45, j23, j33, j44, j34 = bulk_spins
