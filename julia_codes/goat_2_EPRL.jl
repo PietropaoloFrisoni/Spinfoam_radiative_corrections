@@ -1,11 +1,22 @@
 using Distributed
 
-printstyled("\nGoat BF divergence parallelized on $(nworkers()) worker(s)\n\n"; bold=true, color=:blue)
+number_of_workers = nworkers()
+number_of_processes = nprocs()
+number_of_threads = Threads.nthreads()
+available_cpus = length(Sys.cpu_info())
 
-length(ARGS) < 3 && error("please use these 3 arguments: data_sl2cfoam_next_folder    cutoff    store_folder")
+printstyled("\nGoat EPRL divergence parallelized on $(number_of_workers) worker(s) and $(number_of_threads) thread(s)\n\n"; bold=true, color=:blue)
+
+if (number_of_workers * number_of_threads > available_cpus)
+    printstyled("WARNING: you are using more resources than available cores on this system. Performances will be affected\n\n"; bold=true, color=:red)
+end
+
+length(ARGS) < 6 && error("please use these 6 arguments: data_sl2cfoam_next_folder    cutoff    shell_min    shell_max     Immirzi    store_folder")
 @eval @everywhere DATA_SL2CFOAM_FOLDER = $(ARGS[1])
-CUTOFF = parse(Int, ARGS[2])
-@eval STORE_FOLDER = $(ARGS[3])
+SHELL_MIN = parse(Int, ARGS[3])
+SHELL_MAX = parse(Int, ARGS[4])
+@eval @everywhere IMMIRZI = parse(Float64, $(ARGS[5]))
+@eval STORE_FOLDER = $(ARGS[6])
 
 printstyled("precompiling packages...\n"; bold=true, color=:cyan)
 @everywhere begin
@@ -21,25 +32,23 @@ if (CUTOFF <= 1)
     error("please provide a larger cutoff")
 end
 
-STORE_FOLDER = "$(STORE_FOLDER)/data/BF/cutoff_$(CUTOFF_FLOAT)"
+STORE_FOLDER = "$(STORE_FOLDER)/data/EPRL/immirzi_$(IMMIRZI)/divergence/cutoff_$(CUTOFF_FLOAT)"
 mkpath(STORE_FOLDER)
 
 printstyled("initializing library...\n"; bold=true, color=:cyan)
-@everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, 0.123) # fictitious Immirzi 
+@everywhere init_sl2cfoam_next(DATA_SL2CFOAM_FOLDER, IMMIRZI)
 println("done\n")
 
-
-function goat_BF(cutoff)
+# not (yet) optimized
+function goat_EPRL(cutoff, shells)
 
     # set boundary
-    step = half(1)
-    onehalf = half(1)
+    step = onehalf = half(1)
     jb = half(1)
-    # ib must be in range [0, 2jb]
-    # (julia index starts from 1)
-    ib_index = 1
 
     ampls = Float64[]
+
+    result_return = (ret=true, store=false, store_batches=false)
 
     # loop over partial cutoffs
     for pcutoff = 0:step:cutoff
@@ -52,7 +61,7 @@ function goat_BF(cutoff)
 
             # skip if computed in lower partial cutoff
             j25 <= (pcutoff - step) && j34 <= (pcutoff - step) &&
-            j23 <= (pcutoff - step) && j45 <= (pcutoff - step) && continue
+                j23 <= (pcutoff - step) && j45 <= (pcutoff - step) && continue
 
             # skip if any intertwiner range empty
             i1, _ = intertwiner_range(jb, j25, j25, jb)
@@ -84,10 +93,11 @@ function goat_BF(cutoff)
             i2, i2_range = intertwiner_range(j34, jb, j25, jb)
             i3, i3_range = intertwiner_range(jb, j25, j25, j23)
             i4, i4_range = intertwiner_range(jb, j25, j25, j45)
+            reduced_range = (i1, (0, 0), i2, i2, (0, 0))
 
-            # compute BF vertices
-            v1 = vertex_BF_compute([jb, j25, j25, jb, jb, jb, jb, j34, jb, jb])
-            v2 = vertex_BF_compute([jb, j25, j25, jb, j23, j25, j25, jb, j25, j45])
+            # compute EPRL vertices
+            v1 = vertex_compute([jb, j25, j25, jb, jb, jb, jb, j34, jb, jb], shells, reduced_range; result=result_return)
+            v2 = vertex_compute([jb, j25, j25, jb, j23, j25, j25, jb, j25, j45], shells; result=result_return)
 
             # dim internal faces
             dfj = dim(j25) * dim(j34) * dim(j45) * dim(j23)
@@ -98,7 +108,7 @@ function goat_BF(cutoff)
             for i1_index in 1:i1_range, i3_index in 1:i3_range, i2_index in 1:i2_range, i4_index in 1:i4_range
                 amp += v1.a[1, i2_index, i2_index, 1, i1_index] * v2.a[i4_index, i4_index, i3_index, i3_index, i1_index] * (-1)^(2jb + 2j25 + j23 + j45)
             end
-             
+            
             amp * dfj
 
         end
@@ -121,15 +131,28 @@ function goat_BF(cutoff)
 end
 
 printstyled("Pre-compiling the function...\n"; bold=true, color=:cyan)
-@time goat_BF(1);
+@time goat_EPRL(1, 0);
 println("done\n")
 sleep(1)
 
-printstyled("\nStarting computation with K = $(CUTOFF)...\n"; bold=true, color=:cyan)
-@time ampls = goat_BF(CUTOFF);
+
+ampls_matrix = Array{Float64,2}(undef, convert(Int, 2 * CUTOFF + 1), SHELL_MAX - SHELL_MIN + 1)
+
+printstyled("\nStarting computation with K = $(CUTOFF), Dl_min = $(SHELL_MIN), Dl_max = $(SHELL_MAX), Immirzi = $(IMMIRZI)...\n"; bold=true, color=:cyan)
+
+column_labels = String[]
+
+for Dl = SHELL_MIN:SHELL_MAX
+
+    printstyled("\nCurrent Dl = $(Dl)...\n"; bold=true, color=:magenta)
+    @time ampls = goat_EPRL(CUTOFF, Dl)
+    push!(column_labels, "Dl = $(Dl)")
+    ampls_matrix[:, Dl-SHELL_MIN+1] = ampls[:]
+
+end
 
 printstyled("\nSaving dataframe...\n"; bold=true, color=:cyan)
-df = DataFrame(amplitudes=ampls)
-CSV.write("$(STORE_FOLDER)/goat.csv", df)
+df = DataFrame(ampls_matrix, column_labels)
+CSV.write("$(STORE_FOLDER)/goat_2_Dl_min_$(SHELL_MIN)_Dl_max_$(SHELL_MAX).csv", df)
 
 printstyled("\nCompleted\n\n"; bold=true, color=:blue)
